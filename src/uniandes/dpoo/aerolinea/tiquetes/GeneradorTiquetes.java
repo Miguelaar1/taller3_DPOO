@@ -48,6 +48,8 @@ public class GeneradorTiquetes
     public static void registrarTiquete( Tiquete unTiquete )
     {
         // TODO implementar
+    	String code = unTiquete.getCodigo();
+    	codigos.add(code);
     }
 
     /**
@@ -57,7 +59,8 @@ public class GeneradorTiquetes
      */
     public static boolean validarTiquete( String codigoTiquete )
     {
-        // TODO implementar
-        return false;
+    	boolean isPresent = false;
+    	if (codigos.contains(codigoTiquete)) isPresent = true;
+        return isPresent;
     }
 }

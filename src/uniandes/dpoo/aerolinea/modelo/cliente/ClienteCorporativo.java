@@ -11,7 +11,7 @@ public class ClienteCorporativo extends Cliente
 	public final String CORPORATIVO = "Corporativo";
 	public final int GRANDE = 1;
 	public final int MEDIANA = 2;
-	public final int PUQUENA = 3;
+	public final int PEQUENA = 3;
 	private String nombreEmpresa;
 	private int tamanoEmpresa;
 	
@@ -33,6 +33,12 @@ public class ClienteCorporativo extends Cliente
 	public String getTipoCliente() {
 		return this.CORPORATIVO;
 	}
+	
+	@Override
+	public String getIdentificador() {
+		return null;
+	}
+	
     /**
      * Crea un nuevo objeto de tipo a partir de un objeto JSON.
      * 
@@ -59,4 +65,5 @@ public class ClienteCorporativo extends Cliente
         jobject.put( "tipo", CORPORATIVO );
         return jobject;
     }
+
 }

@@ -2,7 +2,6 @@ package uniandes.dpoo.aerolinea.modelo;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import uniandes.dpoo.aerolinea.exceptions.AeropuertoDuplicadoException;
 
 /**
@@ -22,12 +21,16 @@ public class Aeropuerto
 	private static final int RADIO_TERRESTRE = 6371;
 	
 	
-	public Aeropuerto(String nombre, String codigo, String nombreCiudad, double latitud, double longitud) {
+	public Aeropuerto(String nombre, String codigo, String nombreCiudad, double latitud, double longitud) throws AeropuertoDuplicadoException{
 		this.nombre = nombre;
 		this.codigo = codigo;
 		this.nombreCiudad = nombreCiudad;
 		this.latitud = latitud;
 		this.longitud = longitud;
+		
+		if (codigosUtilizados.contains(codigo)) {
+			throw new AeropuertoDuplicadoException();
+		} else codigosUtilizados.add(codigo);
 	}
 	
     public String getNombre() {

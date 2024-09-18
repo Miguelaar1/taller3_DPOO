@@ -43,7 +43,11 @@ public class Ruta
 	}
 
 	public int getDuracion() {
+		int hourDuration = getHoras(this.horaLlegada) - getHoras(this.horaSalida);
+		int minuteDuration = getMinutos(this.horaLlegada) - getMinutos(this.horaSalida);
 		
+		int totalDuration = hourDuration * 60 + minuteDuration;
+		return totalDuration;
 	}
 	
 	/**

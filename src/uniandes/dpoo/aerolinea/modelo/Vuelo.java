@@ -6,6 +6,7 @@ import java.util.Map;
 
 import uniandes.dpoo.aerolinea.exceptions.VueloSobrevendidoException;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
+import uniandes.dpoo.aerolinea.modelo.tarifas.CalculadoraTarifas;
 import uniandes.dpoo.aerolinea.tiquetes.Tiquete;
 
 public class Vuelo {
@@ -47,7 +48,8 @@ public class Vuelo {
 		}
 	}
 	
+	@Override
 	public boolean equals(Object obj) {
-		
+		return this.equals(obj);
 	}
 }

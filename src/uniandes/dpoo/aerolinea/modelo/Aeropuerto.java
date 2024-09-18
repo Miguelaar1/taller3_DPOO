@@ -29,7 +29,7 @@ public class Aeropuerto
 		this.longitud = longitud;
 		
 		if (codigosUtilizados.contains(codigo)) {
-			throw new AeropuertoDuplicadoException();
+			throw new AeropuertoDuplicadoException(codigo);
 		} else codigosUtilizados.add(codigo);
 	}
 	

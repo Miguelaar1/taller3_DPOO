@@ -8,7 +8,7 @@ import org.json.JSONObject;
 public class ClienteCorporativo extends Cliente
 {
     
-	public final String CORPORATIVO = "Corporativo";
+	public static final String CORPORATIVO = "Corporativo";
 	public final int GRANDE = 1;
 	public final int MEDIANA = 2;
 	public final int PEQUENA = 3;

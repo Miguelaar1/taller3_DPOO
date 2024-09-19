@@ -31,7 +31,7 @@ public class ClienteCorporativo extends Cliente
 	}
 	
 	public String getTipoCliente() {
-		return this.CORPORATIVO;
+		return CORPORATIVO;
 	}
 	
 	@Override

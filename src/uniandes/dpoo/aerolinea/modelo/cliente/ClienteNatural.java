@@ -14,7 +14,7 @@ public class ClienteNatural extends Cliente{
 	}
 	
 	public String getTipoCliente() {
-		return this.NATURAL;
+		return NATURAL;
 	}
 
 }

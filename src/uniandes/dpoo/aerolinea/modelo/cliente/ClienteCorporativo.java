@@ -36,7 +36,7 @@ public class ClienteCorporativo extends Cliente
 	
 	@Override
 	public String getIdentificador() {
-		return null;
+		return nombreEmpresa;
 	}
 	
     /**

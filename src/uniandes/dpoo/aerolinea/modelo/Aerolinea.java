@@ -12,11 +12,15 @@ import java.util.Map;
 import uniandes.dpoo.aerolinea.exceptions.InformacionInconsistenteException;
 import uniandes.dpoo.aerolinea.exceptions.VueloSobrevendidoException;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
+import uniandes.dpoo.aerolinea.modelo.tarifas.CalculadoraTarifas;
+import uniandes.dpoo.aerolinea.modelo.tarifas.CalculadoraTarifasTemporadaAlta;
+import uniandes.dpoo.aerolinea.modelo.tarifas.CalculadoraTarifasTemporadaBaja;
 import uniandes.dpoo.aerolinea.persistencia.CentralPersistencia;
 import uniandes.dpoo.aerolinea.persistencia.IPersistenciaAerolinea;
 import uniandes.dpoo.aerolinea.persistencia.IPersistenciaTiquetes;
 import uniandes.dpoo.aerolinea.persistencia.TipoInvalidoException;
 import uniandes.dpoo.aerolinea.tiquetes.Tiquete;
+
 
 /**
  * En esta clase se organizan todos los aspectos relacionados con una Aerolínea.
@@ -289,6 +293,59 @@ public class Aerolinea
     public void programarVuelo( String fecha, String codigoRuta, String nombreAvion ) throws Exception
     {
         // TODO Implementar el método
+    	Avion planeUsed = null;
+    	Ruta ruteTaken = null;
+    	for (Avion plane : aviones) {
+    		if(plane.getNombre().equals(nombreAvion)) {
+    			planeUsed = plane;
+    			break;
+    		}
+    	}
+    	for (Ruta rute : rutas.values()) {
+    		if(rute.getCodigoRuta().equals(codigoRuta)) {
+    			ruteTaken = rute;
+    			break;
+    		}
+    	}
+    	if (planeUsed == null || ruteTaken == null) throw new InformacionInconsistenteException("Algún dato es invalido");
+    	
+    	
+    	for (Vuelo flight : vuelos) {
+    		if (flight.getAvion() == planeUsed) {
+    			if (interseccionVuelos(flight.getRuta(), ruteTaken)) 
+    				throw new InformacionInconsistenteException("Este avión está ocupado en otro vuelo");
+    		}
+    	}
+    	Vuelo newFlight = new Vuelo(ruteTaken, fecha, planeUsed);
+    	vuelos.add(newFlight);
+    }
+    
+    private boolean interseccionVuelos(Ruta ruta1, Ruta ruta2) {
+    	
+    	boolean interseccion = false;
+    	
+    	int horaS = Ruta.getHoras(ruta1.getHoraSalida()), horaL = Ruta.getHoras(ruta1.getHoraLlegada());
+    	int minutoS = Ruta.getMinutos(ruta1.getHoraSalida()), minutoL = Ruta.getMinutos(ruta1.getHoraLlegada());
+    	ArrayList<Integer> rango1 = new ArrayList<Integer>();
+    	int lim = 60;
+    	while(horaS <= horaL) {
+    		int hora = horaS*100;
+    		if (horaS == horaL) lim = minutoL;
+    		while(minutoS < lim) {
+    			
+    			rango1.add(hora + minutoS);
+    			minutoS++;
+    		}
+    		horaS++;
+    	}
+    	
+    	if (rango1.contains(Integer.parseInt(ruta2.getHoraSalida())) || rango1.contains(Integer.parseInt(ruta2.getHoraLlegada())) ) {
+    		interseccion = true;
+    	} else if (Integer.parseInt(ruta2.getHoraSalida()) < rango1.getFirst() && Integer.parseInt(ruta2.getHoraLlegada()) > rango1.getLast()) {
+    		interseccion = true;
+    	}
+    
+    	return interseccion;
     }
 
     /**
@@ -309,7 +366,31 @@ public class Aerolinea
     public int venderTiquetes( String identificadorCliente, String fecha, String codigoRuta, int cantidad ) throws VueloSobrevendidoException, Exception
     {
         // TODO Implementar el método
-        return -1;
+    	Cliente cliente = null;
+    	for (Cliente current : clientes.values()) {
+    		if (current.getIdentificador().equals(identificadorCliente)) {
+    			cliente = current;
+    			break;
+    		}
+    	}
+    	
+    	if (cliente == null) throw new InformacionInconsistenteException("No existe un cliente con ese identificador");
+    	int month = Integer.parseInt(fecha.substring(4, 6));
+    	CalculadoraTarifas calculadora;
+    	if (month >= 1 && month <= 5 ) {
+    		calculadora = new CalculadoraTarifasTemporadaBaja(); 
+    	} else 
+    		calculadora = new CalculadoraTarifasTemporadaAlta();
+    	
+    	Vuelo vuelo = getVuelo(codigoRuta, fecha);
+    	int tiquetesVendidos = vuelo.venderTiquetes(cliente, calculadora, cantidad);
+    	
+//    	int i = 0;
+//    	while(clientes.values().iterator().hasNext()) {
+//    		clientes.values().ge
+//    		i++;
+//    	}
+        return tiquetesVendidos;
     }
 
     /**
@@ -320,6 +401,8 @@ public class Aerolinea
     public void registrarVueloRealizado( String fecha, String codigoRuta )
     {
         // TODO Implementar el método
+    	Vuelo current = this.getVuelo(codigoRuta, fecha);
+    	vuelos.remove(current);
     }
 
     /**
